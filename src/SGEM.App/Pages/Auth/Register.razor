@@ -1,0 +1,157 @@
+﻿@page "/auth/register"
+@using SGEM.App.Services
+@using SGEM.App.ViewModels.Auth
+@inject AuthService auth
+
+<div class="box-shadow" style="max-width: 600px">
+    <h3>Nova conta</h3>
+    <br />
+    <EditForm Model="@register" OnValidSubmit="@(async () => await Submit())">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <label>Como deseja se cadastrar?</label>
+        <select Class="form-control" @bind="register.Perfil">
+            <option value="@Perfil.Selecione" selected>Selecione uma opção</option>
+            <option value="@Perfil.Patient">Paciente</option>
+            <option value="@Perfil.Doctor">Médico</option>
+            <option value="@Perfil.Clinic">Clínica</option>
+        </select>
+        @register.Perfil.ToString()
+        <div style="display: @(register.Perfil != Perfil.Selecione ? "block" : "none")">
+            <div style="display: @(register.Perfil == Perfil.Clinic ? "block" : "none")">
+                <h5>Dados da Clínica</h5>
+                <label class="form-check-label">Razão Social</label>
+                <InputText Class="form-control" @bind-Value="register.Clinic.CompanyName" />
+                <ValidationMessage For="@(() => register.Clinic.CompanyName)" />
+                <label class="form-check-label">Nome Fantasia</label>
+                <InputText Class="form-control" @bind-Value="register.Clinic.FancyName" />
+                <ValidationMessage For="@(() => register.Clinic.FancyName)" />
+                <label class="control-label">CNPJ</label>
+                <InputText Class="form-control" @bind-Value="register.Clinic.Document" />
+                <ValidationMessage For="@(() => register.Clinic.Document)" />
+                <label class="control-label">Telefone</label>
+                <InputText Class="form-control" @bind-Value="register.Clinic.Phone" />
+                <ValidationMessage For="@(() => register.Clinic.Phone)" />
+                <div>
+                    <h5>Endereço da Clínica</h5>
+                    <label class="control-label">CEP</label>
+                    <InputText Class="form-control" @bind-Value="register.Clinic.Address.PostalCode" />
+                    <ValidationMessage For="@(() => register.Clinic.Address.PostalCode)" />
+
+                    <label class="control-label">Rua</label>
+                    <InputText Class="form-control" @bind-Value="register.Clinic.Address.Street" />
+                    <ValidationMessage For="@(() => register.Clinic.Address.Street)" />
+
+                    <label class="control-label">Número</label>
+                    <InputText Class="form-control" @bind-Value="register.Clinic.Address.Number" />
+                    <ValidationMessage For="@(() => register.Clinic.Address.Number)" />
+
+                    <label class="control-label">Complemento</label>
+                    <InputText Class="form-control" @bind-Value="register.Clinic.Address.Complement" />
+                    <ValidationMessage For="@(() => register.Clinic.Address.Complement)" />
+
+                    <label class="control-label">Bairro</label>
+                    <InputText Class="form-control" @bind-Value="register.Clinic.Address.District" />
+                    <ValidationMessage For="@(() => register.Clinic.Address.District)" />
+
+                    <label class="control-label">Cidade</label>
+                    <InputText Class="form-control" @bind-Value="register.Clinic.Address.City" />
+                    <ValidationMessage For="@(() => register.Clinic.Address.City)" />
+
+                    <label class="control-label">Estado</label>
+                    <InputText Class="form-control" @bind-Value="register.Clinic.Address.State" />
+                    <ValidationMessage For="@(() => register.Clinic.Address.State)" />
+
+                    <label class="control-label">País</label>
+                    <InputText Class="form-control" @bind-Value="register.Clinic.Address.Country" />
+                    <ValidationMessage For="@(() => register.Clinic.Address.Country)" />
+                </div>
+            </div>
+            <hr />
+            <div>
+                <h5>Dados do usuário</h5>
+                <label class="control-label">Nome</label>
+                <InputText Class="form-control" @bind-Value="register.Name" />
+                <ValidationMessage For="@(() => register.Name)" />
+
+                <label class="control-label">Sobrenome</label>
+                <InputText Class="form-control" @bind-Value="register.Surname" />
+                <ValidationMessage For="@(() => register.Surname)" />
+
+                <label class="control-label">CPF</label>
+                <InputText Class="form-control" @bind-Value="register.Document" />
+                <ValidationMessage For="@(() => register.Document)" />
+
+                <label class="control-label">Email</label>
+                <InputText Class="form-control" @bind-Value="register.Email" />
+                <ValidationMessage For="@(() => register.Email)" />
+
+                <label class="control-label">Sexo</label>
+                <select Class="form-control" @bind="register.Gender">
+                    <option value=@Gender.Masculino>@Gender.Masculino.ToString()</option>
+                    <option value=@Gender.Feminino>@Gender.Feminino.ToString()</option>
+                </select>
+                <ValidationMessage For="@(() => register.Gender)" />
+
+                <label class="control-label">Telefone</label>
+                <InputText Class="form-control" @bind-Value="register.Phone" />
+                <ValidationMessage For="@(() => register.Phone)" />
+
+                <label class="control-label">Whatsapp</label>
+                <InputText Class="form-control" @bind-Value="register.WhatsApp" />
+                <ValidationMessage For="@(() => register.WhatsApp)" />
+
+                <div style="display: @(register.Perfil == Perfil.Doctor ? "block" : "none")">
+                    <label class="control-label">CRM</label>
+                    <InputText Class="form-control" @bind-Value="register.Crm" />
+                    <ValidationMessage For="@(() => register.Crm)" />
+                </div>
+
+                <label class="control-label">Senha</label>
+                <InputText Class="form-control" @bind-Value="register.Password" />
+                <ValidationMessage For="@(() => register.Password)" />
+
+                <label class="control-label">Confirmar Senha</label>
+                <InputText Class="form-control" @bind-Value="register.ConfirmPassword" />
+                <ValidationMessage For="@(() => register.ConfirmPassword)" />
+            </div>
+            <br />
+            <button type="submit" class="btn btn-primary">Registrar</button>
+        </div>
+    </EditForm>
+</div>
+@option
+<div>
+    @foreach (var error in _errors ?? new List<string>())
+    {
+        <BSAlert>@error</BSAlert>
+    }
+</div>
+@code {
+    RegisterUserViewModel register = new RegisterUserViewModel();
+
+
+    private string option;
+    private List<string> _errors;
+
+    protected override void OnInitialized()
+    {
+        register.Address = new ViewModels.Address.SaveAddressViewModel();
+        register.Clinic = new ViewModels.Clinic.SaveClinicViewModel();
+        register.Clinic.Address = new ViewModels.Address.SaveAddressViewModel();
+    }
+
+    async Task Submit()
+    {
+        try
+        {
+            await auth.Register(register);
+        }
+        catch (HttpException exception)
+        {
+            _errors = exception.Errors;
+        }
+    }
+
+
+}

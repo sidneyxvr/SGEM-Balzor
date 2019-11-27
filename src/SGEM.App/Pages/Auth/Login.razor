@@ -1,0 +1,42 @@
+﻿@page "/auth/login"
+@using SGEM.App.Services
+@using SGEM.App.ViewModels.Auth
+@inject AuthService auth
+
+<div class="box-shadow" style="max-width: 600px">
+    <h3>Login</h3>
+    <EditForm Model="@login" OnValidSubmit="@(async () => await Submit())">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <label class="control-label">Email</label>
+        <InputText Class="form-control" @bind-Value="login.Email" />
+        <ValidationMessage For="@(() => login.Email)" />
+        <label class="control-label">Password</label>
+        <InputText type="password" Class="form-control" @bind-Value="login.Password" />
+        <ValidationMessage For="@(() => login.Password)" />
+        <br />
+        <button type="submit" class="btn btn-primary">Entrar</button>
+    </EditForm>
+</div>
+<div>
+    @foreach (var error in _errors ?? new List<string>())
+    {
+        <BSAlert>@error</BSAlert>
+    }
+</div>
+@code {
+    LoginViewModel login = new LoginViewModel();
+    private List<string> _errors;
+
+    async Task Submit()
+    {
+        try
+        {
+            await auth.Login(login);
+        }
+        catch (HttpException exception)
+        {
+            _errors = exception.Errors;
+        }
+    }
+}
